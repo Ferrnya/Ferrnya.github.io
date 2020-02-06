@@ -79,16 +79,18 @@
 
 
 
-<meta name="description" content="原码、反码、补码和移码原码：正数是其二进制本身；负数是符号位为1,数值部分取X绝对值的二进制。  反码：正数的反码和原码相同；负数是符号位为1,其它位是原码取反。  补码：正数的补码和原码，反码相同；负数是符号位为1，其它位是原码取反，末位加1。（或者说负数的补码是其绝对值反码末位加1）  移码：将符号位取反的补码（不区分正负） 即正数的原码、反码、补码都相同，移码为最高位0变1">
+<meta name="description" content="进制转换与位运算一、进制转换1 基础内容十进制：有十个基数 0,1,2,3,4,5,6,7,8,9二进制：逢二进一，借一为二。基数为0,1八进制：逢八进一，借一为八。基数为0,1,2,3,4,5,6,7十六进制：逢十六进一，借一为十六。基数为0,1,2,3,4,5,6,7,8,9，A(10),B(11),C(12),D(13),E(14),F(15)">
 <meta name="keywords" content="剑指offer">
 <meta property="og:type" content="article">
-<meta property="og:title" content="原码、补码、反码、移码">
-<meta property="og:url" content="Ferrnya.github.io&#x2F;2019&#x2F;11&#x2F;01&#x2F;%E5%8E%9F%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E7%A7%BB%E7%A0%81&#x2F;index.html">
+<meta property="og:title" content="进制转换与位运算">
+<meta property="og:url" content="Ferrnya.github.io&#x2F;2020&#x2F;02&#x2F;06&#x2F;%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E4%B8%8E%E4%BD%8D%E8%BF%90%E7%AE%97&#x2F;index.html">
 <meta property="og:site_name" content="Fern&#39;s Blog">
-<meta property="og:description" content="原码、反码、补码和移码原码：正数是其二进制本身；负数是符号位为1,数值部分取X绝对值的二进制。  反码：正数的反码和原码相同；负数是符号位为1,其它位是原码取反。  补码：正数的补码和原码，反码相同；负数是符号位为1，其它位是原码取反，末位加1。（或者说负数的补码是其绝对值反码末位加1）  移码：将符号位取反的补码（不区分正负） 即正数的原码、反码、补码都相同，移码为最高位0变1">
+<meta property="og:description" content="进制转换与位运算一、进制转换1 基础内容十进制：有十个基数 0,1,2,3,4,5,6,7,8,9二进制：逢二进一，借一为二。基数为0,1八进制：逢八进一，借一为八。基数为0,1,2,3,4,5,6,7十六进制：逢十六进一，借一为十六。基数为0,1,2,3,4,5,6,7,8,9，A(10),B(11),C(12),D(13),E(14),F(15)">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-02-06T04:33:01.024Z">
+<meta property="og:image" content="&#x2F;images&#x2F;weiyunsuan&#x2F;1.png">
+<meta property="og:updated_time" content="2020-02-06T05:21:09.982Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="&#x2F;images&#x2F;weiyunsuan&#x2F;1.png">
 
 
 
@@ -118,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="Ferrnya.github.io/2019/11/01/原码、补码、反码、移码/"/>
+  <link rel="canonical" href="Ferrnya.github.io/2020/02/06/进制转换与位运算/"/>
 
 
 
 
 
-  <title>原码、补码、反码、移码 | Fern's Blog</title>
+  <title>进制转换与位运算 | Fern's Blog</title>
   
 
 
@@ -243,7 +245,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="Ferrnya.github.io/2019/11/01/%E5%8E%9F%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E7%A7%BB%E7%A0%81/">
+    <link itemprop="mainEntityOfPage" href="Ferrnya.github.io/2020/02/06/%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E4%B8%8E%E4%BD%8D%E8%BF%90%E7%AE%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Fern">
@@ -260,7 +262,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">原码、补码、反码、移码</h1>
+          <h1 class="post-title" itemprop="name headline">进制转换与位运算</h1>
         
 
         <div class="post-meta">
@@ -272,8 +274,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-01T14:18:09+08:00">
-                2019-11-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-06T12:29:43+08:00">
+                2020-02-06
               </time>
             
 
@@ -288,7 +290,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-02-06T12:33:01+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2020-02-06T13:21:09+08:00">
                 2020-02-06
               </time>
             
@@ -338,7 +340,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  193
+                  2.3k
                 </span>
               
 
@@ -354,7 +356,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1
+                  9
                 </span>
               
             </div>
@@ -375,43 +377,32 @@
       
 
       
-        <h4 id="原码、反码、补码和移码"><a href="#原码、反码、补码和移码" class="headerlink" title="原码、反码、补码和移码"></a>原码、反码、补码和移码</h4><p><br><strong>原码</strong>：正数是其二进制本身；负数是符号位为1,数值部分取X绝对值的二进制。 </p>
-<p><strong>反码</strong>：正数的反码和原码相同；负数是符号位为1,其它位是原码取反。 </p>
-<p><strong>补码</strong>：正数的补码和原码，反码相同；负数是符号位为1，其它位是原码取反，末位加1。（或者说负数的补码是其绝对值反码末位加1） </p>
-<p><strong>移码</strong>：将符号位取反的补码（不区分正负）</p>
-<p>即正数的原码、反码、补码都相同，移码为最高位0变1</p>
+        <h4 id="进制转换与位运算"><a href="#进制转换与位运算" class="headerlink" title="进制转换与位运算"></a>进制转换与位运算</h4><h5 id="一、进制转换"><a href="#一、进制转换" class="headerlink" title="一、进制转换"></a>一、进制转换</h5><p>1 基础内容<br>十进制：有十个基数 0,1,2,3,4,5,6,7,8,9<br>二进制：逢二进一，借一为二。基数为0,1<br>八进制：逢八进一，借一为八。基数为0,1,2,3,4,5,6,7<br>十六进制：逢十六进一，借一为十六。基数为0,1,2,3,4,5,6,7,8,9，A(10),B(11),C(12),D(13),E(14),F(15)</p>
 <a id="more"></a>
 
-<table>
-<thead>
-<tr>
-<th align="center">编码</th>
-<th align="center">108</th>
-<th align="center">-108</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">原码</td>
-<td align="center">01101100</td>
-<td align="center">11101100</td>
-</tr>
-<tr>
-<td align="center">反码</td>
-<td align="center">01101100</td>
-<td align="center">10010011</td>
-</tr>
-<tr>
-<td align="center">补码</td>
-<td align="center">01101100</td>
-<td align="center">10010100</td>
-</tr>
-<tr>
-<td align="center">移码</td>
-<td align="center">11101100</td>
-<td align="center">00010100</td>
-</tr>
-</tbody></table>
-<p><strong>注意</strong>：计算机中存储的是32位补码</p>
+<p>2 转换方法<br>（1）十进制与其他进制（二、八、十六）<br>十进制→ 二进制：十进制数除以二，除至0后，所得余数按照反方向写出即可。<br><img src="/images/weiyunsuan/1.png" alt></p>
+<p>十进制→ 八进制：十进制数逐次整除八，直至商为0，所得余数按照反方向写出即可。（同理，把上图中2换成8计算即可）</p>
+<p>十进制→ 十六进制：十进制数逐次整除十六，直至商为0，所得余数按照反方向写出即可，但要注意10及其以上的数字用字母A-F表示。（同理，把上图中2换成16计算即可）</p>
+<p>（2）其他进制与十进制<br>注意：a—m方向为从右到左</p>
+<p>二进制→十进制：a×20＋b×21+c×22+d×23+…….+m×2(n-1)<br>例如：将二进制的(101011)转换为十进制的步骤如下：<br>1 第0位 1 x 2^0 = 1；<br>2 第1位 1 x 2^1 = 2；<br>3 第2位 0 x 2^2 = 0；<br>4 第3位 1 x 2^3 = 8；<br>5 第4位 0 x 2^4 = 0；<br>6 第5位 1 x 2^5 = 32；<br>7 读数，把结果值相加，1+2+0+8+0+32=43</p>
+<p>八进制→十进制：a×80＋b×81+c×82+d×83+…….+m×8(n-1)<br>例如：将八进制的(53)转换为十进制的步骤如下：<br>1 第0位 3 x 8^0 = 3；<br>2 第1位 5 x 8^1 = 40；<br>3 读数，把结果值相加，3+40=43（8）</p>
+<p>十六进制→十进制：a×160＋b×161+c×162+d×163+…….+m×16(n-1)<br>例：将十六进制的(2B)转换为十进制的步骤如下：<br>1 第0位 B x 16^0 = 11；<br>2 第1位 2 x 16^1 = 32；<br>3 读数，把结果值相加，11+32=43（16）</p>
+<p>（3）其他进制间的转换<br>二进制→八进制:对于整数，采用从右到左每三位一组，不够三位的在其左边补齐0，每组单独转换出来即可。<br>例如：转换二进制数 1110101010100 那么分组为<br>001 110 101 010 100 按照转换方法对应转换<br>  1    6    5    2    4<br>所以 1110101010100(2) = 16524(8)</p>
+<p>八进制→二进制：将每位八进制由三位二进制数代替即可。</p>
+<p>二进制→十六进制：此时分组为从右到左每 4 位二进制数为一组进行转换</p>
+<p>例如：转换二进制 0101010100101011010，分组：<br>0010 1010 1001 0101 1010<br>   2     A      9      5      A<br>所以0101010100101011010(2) = 2A95A(16)</p>
+<p>十六进制→二进制：将每位十六进制由四位二进制数代替即可。</p>
+<h5 id="二、位运算"><a href="#二、位运算" class="headerlink" title="二、位运算"></a>二、位运算</h5><p>1 位运算概述<br>从现代计算机中所有的数据二进制的形式存储在设备中。即0、1两种状态，计算机对二进制数据进行的运算(+、-、*、/)都是叫位运算，即将符号位共同参与运算的运算。<br>口说无凭，举一个简单的例子来看下CPU是如何进行计算的，比如这行代码：<br>int a = 35;<br>int b = 47;<br>int c = a + b;<br>计算两个数的和，因为在计算机中都是以二进制来进行运算，所以上面我们所给的int变量会在机器内部先转换为二进制在进行相加：<br>35:  0 0 1 0 0 0 1 1<br>47:  0 0 1 0 1 1 1 1<br>————————————————————<br>82:  0 1 0 1 0 0 1 0<br>所以，相比在代码中直接使用(+、-、*、/)运算符，合理的运用位运算更能显著提高代码在机器上的执行效率。</p>
+<p>| 符号 | 描述 | 运算规则 |<br>| &amp; | 与 | 两个位都为1时，结果才为1 |<br>| | | 或 | 两个位都为0时，结果才为0 |<br>| ^ | 异或 | 两个位相同为0，相异为1 |<br>| ~ | 取反 | 0变1，1变0 |<br>| &lt;&lt; | 左移 | 各二进位全部左移若干位，高位丢弃，低位补0 |<br>| &gt;&gt; | 右移 | 各二进位全部右移若干位，对无符号数，高位补0，有符号数，各编译器处理方法不一样，有的补符号位（算术右移），有的补0（逻辑右移） |</p>
+<p>2 与运算（&amp;）<br>定义：参加运算的两个数据，按二进制位进行“与”运算。<br>运算规则：<br><em><strong>0&amp;0=0  0&amp;1=0  1&amp;0=0  1&amp;1=1</strong></em><br><em><strong>总结：两位同时为1，结果才为1，否则结果为0。</strong></em><br>例如：3&amp;5 即 0000 0011&amp; 0000 0101 = 0000 0001，因此 3&amp;5 的值得1。<br><strong>注意：负数按补码形式参加按位与运算。</strong><br>与运算的用途：<br>1）清零<br>如果想将一个单元清零，即使其全部二进制位为0，只要与一个各位都为零的数值相与，结果为零。<br>2）取一个数的指定位<br>比如取数 X=1010 1110 的低4位，只需要另找一个数Y，令Y的低4位为1，其余位为0，即Y=0000 1111，然后将X与Y进行按位与运算（X&amp;Y=0000 1110）即可得到X的指定位。<br>3）判断奇偶<br>只要根据最未位是0还是1来决定，为0就是偶数，为1就是奇数。因此可以用if ((a &amp; 1) == 0)代替if (a % 2 == 0)来判断a是不是偶数。</p>
+<p>3 或运算（｜）<br>定义：参加运算的两个对象，按二进制位进行“或”运算。<br>运算规则：<br><strong><em>0|0=0  0|1=1  1|0=1  1|1=1</em></strong><br><strong><em>总结：参加运算的两个对象只要有一个为1，其值为1。</em></strong><br>例如：3|5即 0000 0011| 0000 0101 = 0000 0111，因此，3|5的值得7。　<br>注意：负数按补码形式参加按位或运算。<br>或运算的用途：<br>1）常用来对一个数据的某些位设置为1<br>比如将数 X=1010 1110 的低4位设置为1，只需要另找一个数Y，令Y的低4位为1，其余位为0，即Y=0000 1111，然后将X与Y进行按位或运算（X|Y=1010 1111）即可得到。</p>
+<p>4 异或运算（^）<br>定义：参加运算的两个数据，按二进制位进行“异或”运算。<br>运算规则：<br><strong><em>0^0=0  0^1=1  1^0=1  1^1=0</em></strong><br><strong><em>总结：参加运算的两个对象，如果两个相应位相同为0，相异为1。</em></strong><br>异或的几条性质:<br>1、交换律<br>2、结合律 (a^b)^c == a^(b^c)<br>3、对于任何数x，都有 x^x=0，x^0=x<br>4、自反性: a^b^b=a^0=a;<br>异或运算的用途：<br>1）翻转指定<br>比如将数 X=1010 1110 的低4位进行翻转，只需要另找一个数Y，令Y的低4位为1，其余位为0，即Y=0000 1111，然后将X与Y进行异或运算（X^Y=1010 0001）即可得到。<br>2）与0相异或值不变<br>例如：1010 1110 ^ 0000 0000 = 1010 1110<br>3）交换两个数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Swap</span><span class="params">(<span class="keyword">int</span> &amp;a, <span class="keyword">int</span> &amp;b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (a != b)&#123;</span><br><span class="line">        a ^= b;</span><br><span class="line">        b ^= a;</span><br><span class="line">        a ^= b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>5 取反运算（~）<br>定义：参加运算的一个数据，按二进制进行“取反”运算。<br>运算规则：　<br><strong><em>~1=0</em></strong><br><strong><em>~0=1</em></strong><br><strong><em>总结：对一个二进制数按位取反，即将0变1，1变0。</em></strong><br>异或运算的用途：<br>1）使一个数的最低位为零<br>使a的最低位为0，可以表示为：a &amp; ~1。~1的值为 1111 1111 1111 1110，再按”与”运算，最低位一定为0。因为“ ~”运算符的优先级比算术运算符、关系运算符、逻辑运算符和其他运算符都高。</p>
+<p>6 左移运算（&lt;&lt;）<br>定义：将一个运算对象的各二进制位全部左移若干位（左边的二进制位丢弃，右边补0）。<br><strong><em>设 a=1010 1110，a = a&lt;&lt; 2 将a的二进制位左移2位、右补0，即得a=1011 1000。</em></strong><br>若左移时舍弃的高位不包含1，则每左移一位，相当于该数乘以2。</p>
+<p>7 右移运算（&gt;&gt;）<br>定义：将一个数的各二进制位全部右移若干位，正数左补0，负数左补1，右边丢弃。<br>例如：a=a&gt;&gt;2 将a的二进制位右移2位，左补0 或者 左补1得看被移数是正还是负。<br>操作数每右移一位，相当于该数除以2。</p>
+<p>8 复合赋值运算符<br>位运算符与赋值运算符结合，组成新的复合赋值运算符，它们是：<br>&amp;=        例：a&amp;=b    相当于     a=a&amp;b<br>|=        例：a|=b    相当于     a=a|b<br>&gt;&gt;=      例：a&gt;&gt;=b   相当于     a=a&gt;&gt;b<br>&lt;&lt;=      例：a&lt;&lt;=b     相当于      a=a&lt;&lt;b<br>^=        例：a^=b    相当于   a=a^b<br>运算规则：和前面讲的复合赋值运算符的运算规则相似。<br>不同长度的数据进行位运算：如果两个不同长度的数据进行位运算时，系统会将二者按右端对齐，然后进行位运算。</p>
 
       
     </div>
@@ -442,15 +433,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2020/01/10/String%20%20StringBuffer%E5%92%8CStringBuilder%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="next" title="String,StringBuffer和StringBuilder的区别">
+                <i class="fa fa-chevron-left"></i> String,StringBuffer和StringBuilder的区别
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/11/04/offer-experience/" rel="prev" title="经验分享会">
-                经验分享会 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -595,7 +586,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#原码、反码、补码和移码"><span class="nav-number">1.</span> <span class="nav-text">原码、反码、补码和移码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#进制转换与位运算"><span class="nav-number">1.</span> <span class="nav-text">进制转换与位运算</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#一、进制转换"><span class="nav-number">1.1.</span> <span class="nav-text">一、进制转换</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#二、位运算"><span class="nav-number">1.2.</span> <span class="nav-text">二、位运算</span></a></li></ol></li></ol></div>
             
 
           </div>

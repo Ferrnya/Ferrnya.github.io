@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Fern&#39;s Blog">
 <meta property="og:description" content="一些解决问题的方法1 运行shell文件出现 “syntax error near unexpected token `do” 脚本报错误解决问题：Linux和Windows下的回车换行符不兼容问题 解决方案：使用notepad++将文件转换成unix格式即可解决 编辑-&amp;gt;文档格式转换-&amp;gt;转换为UNIX格式">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-29T08:04:03.241Z">
+<meta property="og:updated_time" content="2020-01-02T08:31:28.136Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -288,8 +288,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-12-29T16:04:03+08:00">
-                2019-12-29
+              <time title="更新于" itemprop="dateModified" datetime="2020-01-02T16:31:28+08:00">
+                2020-01-02
               </time>
             
           </span>
@@ -338,7 +338,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  82
+                  168
                 </span>
               
 
@@ -379,6 +379,12 @@
 <p>解决方案：使用notepad++将文件转换成unix格式即可解决</p>
 <p>编辑-&gt;文档格式转换-&gt;转换为UNIX格式</p>
 <a id="more"></a>
+
+<h6 id="2-Pytorch-0-4-0-出现”Expected-object-of-type-torch-cuda-FloatTensor-but-found-type-torch-cuda-DoubleTensor-for-argument-3-‘other’“问题"><a href="#2-Pytorch-0-4-0-出现”Expected-object-of-type-torch-cuda-FloatTensor-but-found-type-torch-cuda-DoubleTensor-for-argument-3-‘other’“问题" class="headerlink" title="2 Pytorch 0.4.0 出现”Expected object of type torch.cuda.FloatTensor but found type torch.cuda.DoubleTensor for argument #3 ‘other’“问题"></a>2 Pytorch 0.4.0 出现”Expected object of type torch.cuda.FloatTensor but found type torch.cuda.DoubleTensor for argument #3 ‘other’“问题</h6><p>问题：两个张量相减的时候，出现这个问题，debug了一整天，两个张量都是float类型的。debug后发现其中一个张量的requires_grad是False，导致错误</p>
+<p>解决方案：改为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x.requires_grad_()</span><br><span class="line">x = x.float().cuda()</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     
@@ -510,7 +516,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -565,7 +571,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#一些解决问题的方法"><span class="nav-number">1.</span> <span class="nav-text">一些解决问题的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-运行shell文件出现-“syntax-error-near-unexpected-token-do”-脚本报错误解决"><span class="nav-number">1.1.</span> <span class="nav-text">1 运行shell文件出现 “syntax error near unexpected token `do” 脚本报错误解决</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#一些解决问题的方法"><span class="nav-number">1.</span> <span class="nav-text">一些解决问题的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-运行shell文件出现-“syntax-error-near-unexpected-token-do”-脚本报错误解决"><span class="nav-number">1.1.</span> <span class="nav-text">1 运行shell文件出现 “syntax error near unexpected token `do” 脚本报错误解决</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-Pytorch-0-4-0-出现”Expected-object-of-type-torch-cuda-FloatTensor-but-found-type-torch-cuda-DoubleTensor-for-argument-3-‘other’“问题"><span class="nav-number">1.2.</span> <span class="nav-text">2 Pytorch 0.4.0 出现”Expected object of type torch.cuda.FloatTensor but found type torch.cuda.DoubleTensor for argument #3 ‘other’“问题</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -585,21 +591,12 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Fern</span>
 
-  
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-area-chart"></i>
-    </span>
-    
-      <span class="post-meta-item-text">Site words total count&#58;</span>
-    
-    <span title="Site words total count">4.7k</span>
   
 </div>
 
