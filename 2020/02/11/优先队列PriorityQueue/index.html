@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Queue," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、优先队列概述优先队列的本质是最小堆，每个父节点都比两个子节点小，但整个数组又不是完全顺序的。 PriorityQueue是一个基于优先级的无界优先级队列。优先级队列的元素按照其自然顺序进行排序，或者根据构造队列时提供的 Comparator 进行排序，具体取决于所使用的构造方法。该队列不允许使用 null 元素也不允许插入不可比较的对象(没有实现Comparable接口的对象)。Priorit">
+<meta name="keywords" content="Queue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="优先队列PriorityQueue">
+<meta property="og:url" content="Ferrnya.github.io&#x2F;2020&#x2F;02&#x2F;11&#x2F;%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97PriorityQueue&#x2F;index.html">
+<meta property="og:site_name" content="Fern&#39;s Blog">
+<meta property="og:description" content="一、优先队列概述优先队列的本质是最小堆，每个父节点都比两个子节点小，但整个数组又不是完全顺序的。 PriorityQueue是一个基于优先级的无界优先级队列。优先级队列的元素按照其自然顺序进行排序，或者根据构造队列时提供的 Comparator 进行排序，具体取决于所使用的构造方法。该队列不允许使用 null 元素也不允许插入不可比较的对象(没有实现Comparable接口的对象)。Priorit">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="&#x2F;images&#x2F;priorityQueue&#x2F;1.png">
+<meta property="og:image" content="&#x2F;images&#x2F;priorityQueue&#x2F;2.png">
+<meta property="og:updated_time" content="2020-02-12T05:34:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="&#x2F;images&#x2F;priorityQueue&#x2F;1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="Ferrnya.github.io/2020/02/11/优先队列PriorityQueue/"/>
+
+
+
+
+
+  <title>优先队列PriorityQueue | Fern's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fern's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一只想要拥有好睡眠的羊</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            tools
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="Ferrnya.github.io/2020/02/11/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97PriorityQueue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fern">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/fern.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fern's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">优先队列PriorityQueue</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-11T13:53:47+08:00">
+                2020-02-11
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-02-12T13:34:47+08:00">
+                2020-02-12
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="一、优先队列概述"><a href="#一、优先队列概述" class="headerlink" title="一、优先队列概述"></a>一、优先队列概述</h4><p>优先队列的本质是最小堆，每个父节点都比两个子节点小，但整个数组又不是完全顺序的。</p>
+<p>PriorityQueue是一个基于优先级的无界优先级队列。优先级队列的元素按照其自然顺序进行排序，或者根据构造队列时提供的 Comparator 进行排序，具体取决于所使用的构造方法。该队列不允许使用 null 元素也不允许插入不可比较的对象(没有实现Comparable接口的对象)。<br>PriorityQueue 队列的头指排序规则最小那个元素。如果多个元素都是最小值则随机选一个。<br>PriorityQueue 是一个无界队列，但是初始的容量(实际是一个Object[])，随着不断向优先级队列添加元素，其容量会自动扩容，无需指定容量增加策略的细节。</p>
+<a id="more"></a>
+
+<p><img src="/images/priorityQueue/1.png" alt><br>                                                                              最小堆</p>
+<p><img src="/images/priorityQueue/2.png" alt><br>                                                                              体系结构</p>
+<h4 id="二、常用方法"><a href="#二、常用方法" class="headerlink" title="二、常用方法"></a>二、常用方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">peek()<span class="comment">//返回队首元素</span></span><br><span class="line">poll()<span class="comment">//返回队首元素，队首元素出队列</span></span><br><span class="line">add()<span class="comment">//添加元素</span></span><br><span class="line">size()<span class="comment">//返回队列元素个数</span></span><br><span class="line">isEmpty()<span class="comment">//判断队列是否为空，为空返回true,不空返回false</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="三、优先队列的使用"><a href="#三、优先队列的使用" class="headerlink" title="三、优先队列的使用"></a>三、优先队列的使用</h4><h5 id="1、队列保存的是基本数据类型的包装类"><a href="#1、队列保存的是基本数据类型的包装类" class="headerlink" title="1、队列保存的是基本数据类型的包装类"></a>1、队列保存的是基本数据类型的包装类</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//自定义比较器，降序排列</span></span><br><span class="line"><span class="keyword">static</span> Comparator&lt;Integer&gt; cmp = <span class="keyword">new</span> Comparator&lt;Integer&gt;() &#123;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Integer e1, Integer e2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> e2 - e1;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//不用比较器，默认升序排列</span></span><br><span class="line">        Queue&lt;Integer&gt; q = <span class="keyword">new</span> PriorityQueue&lt;&gt;();</span><br><span class="line">        q.add(<span class="number">3</span>);</span><br><span class="line">        q.add(<span class="number">2</span>);</span><br><span class="line">        q.add(<span class="number">4</span>);</span><br><span class="line">        <span class="keyword">while</span>(!q.isEmpty())</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.print(q.poll()+<span class="string">" "</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 输出结果</span></span><br><span class="line"><span class="comment">         * 2 3 4 </span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="comment">//使用自定义比较器，降序排列</span></span><br><span class="line">        Queue&lt;Integer&gt; qq = <span class="keyword">new</span> PriorityQueue&lt;&gt;(cmp);</span><br><span class="line">        qq.add(<span class="number">3</span>);</span><br><span class="line">        qq.add(<span class="number">2</span>);</span><br><span class="line">        qq.add(<span class="number">4</span>);</span><br><span class="line">        <span class="keyword">while</span>(!qq.isEmpty())</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.print(qq.poll()+<span class="string">" "</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 输出结果</span></span><br><span class="line"><span class="comment">         * 4 3 2 </span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2、队列保存的是自定义类"><a href="#2、队列保存的是自定义类" class="headerlink" title="2、队列保存的是自定义类"></a>2、队列保存的是自定义类</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//矩形类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> chang,<span class="keyword">int</span> kuan)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.chang=chang;</span><br><span class="line">        <span class="keyword">this</span>.kuan=kuan;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> chang;</span><br><span class="line">    <span class="keyword">int</span> kuan;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">　　　　<span class="comment">//自定义比较类，先比较长，长升序排列，若长相等再比较宽，宽降序</span></span><br><span class="line">    <span class="keyword">static</span> Comparator&lt;Node&gt; cNode=<span class="keyword">new</span> Comparator&lt;Node&gt;() &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Node o1, Node o2)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(o1.chang!=o2.chang)</span><br><span class="line">                <span class="keyword">return</span> o1.chang-o2.chang;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="keyword">return</span> o2.kuan-o1.kuan;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Queue&lt;Node&gt; q=<span class="keyword">new</span> PriorityQueue&lt;&gt;(cNode);</span><br><span class="line">        Node n1=<span class="keyword">new</span> Node(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">        Node n2=<span class="keyword">new</span> Node(<span class="number">2</span>, <span class="number">5</span>);</span><br><span class="line">        Node n3=<span class="keyword">new</span> Node(<span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">        Node n4=<span class="keyword">new</span> Node(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">        q.add(n1);</span><br><span class="line">        q.add(n2);</span><br><span class="line">        q.add(n3);</span><br><span class="line">        Node n;</span><br><span class="line">        <span class="keyword">while</span>(!q.isEmpty())</span><br><span class="line">        &#123;</span><br><span class="line">            n=q.poll();</span><br><span class="line">            System.out.println(<span class="string">"长: "</span>+n.chang+<span class="string">" 宽："</span> +n.kuan);</span><br><span class="line">        &#125;</span><br><span class="line">　　　　　<span class="comment">/**</span></span><br><span class="line"><span class="comment">　　　　　　* 输出结果</span></span><br><span class="line"><span class="comment">　　　　　　* 长: 1 宽：2</span></span><br><span class="line"><span class="comment">　　　　　　* 长: 2 宽：5</span></span><br><span class="line"><span class="comment">　　　　　　* 长: 2 宽：3</span></span><br><span class="line"><span class="comment">　　　　　　*/</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3、优先队列的遍历"><a href="#3、优先队列的遍历" class="headerlink" title="3、优先队列的遍历"></a>3、优先队列的遍历</h5><p>PriorityQueue的iterator（）不保证以任何特定顺序遍历队列元素。<br>若想按特定顺序遍历，先将队列转成数组，然后排序遍历</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Queue&lt;Integer&gt; q = <span class="keyword">new</span> PriorityQueue&lt;&gt;(cmp);</span><br><span class="line"><span class="keyword">int</span>[] nums= &#123;<span class="number">2</span>,<span class="number">5</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">6</span>&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i:nums&#123;</span><br><span class="line">   q.add(i);</span><br><span class="line">&#125;</span><br><span class="line">Object[] nn=q.toArray();</span><br><span class="line">Arrays.sort(nn);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=nn.length-<span class="number">1</span>;i&gt;=<span class="number">0</span>;i--)</span><br><span class="line">    System.out.print((<span class="keyword">int</span>)nn[i]+<span class="string">" "</span>);</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 输出结果</span></span><br><span class="line"><span class="comment"> * 6 5 4 3 2 1 </span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="4、比较器升降序说明"><a href="#4、比较器升降序说明" class="headerlink" title="4、比较器升降序说明"></a>4、比较器升降序说明</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Comparator&lt;Object&gt; cmp = <span class="keyword">new</span> Comparator&lt;Object&gt;() &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Object o1, Object o2)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//升序</span></span><br><span class="line">            <span class="keyword">return</span> o1-o2;</span><br><span class="line">            <span class="comment">//降序</span></span><br><span class="line">            <span class="keyword">return</span> o2-o1;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="四、源码解析"><a href="#四、源码解析" class="headerlink" title="四、源码解析"></a>四、源码解析</h4><p>PriorityQueue 是怎么实现优先级队列的呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PriorityQueue</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">transient</span> Object[] queue;    <span class="comment">//队列容器， 默认是11</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size = <span class="number">0</span>;  <span class="comment">//队列长度</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Comparator&lt;? <span class="keyword">super</span> E&gt; comparator;  <span class="comment">//队列比较器， 为null使用自然排序</span></span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="1、入列"><a href="#1、入列" class="headerlink" title="1、入列"></a>1、入列</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">offer</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (e == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">int</span> i = size;</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= queue.length)</span><br><span class="line">         grow(i + <span class="number">1</span>);      <span class="comment">//当队列长度大于等于容量值时，自动拓展</span></span><br><span class="line">    size = i + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (i == <span class="number">0</span>)</span><br><span class="line">         queue[<span class="number">0</span>] = e;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">         siftUp(i, e); <span class="comment">//</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">siftUp</span><span class="params">(<span class="keyword">int</span> k, E x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (comparator != <span class="keyword">null</span>)</span><br><span class="line">         siftUpUsingComparator(k, x);   <span class="comment">//指定比较器</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">         siftUpComparable(k, x);   <span class="comment">//没有指定比较器，使用默认的自然比较器</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">siftUpComparable</span><span class="params">(<span class="keyword">int</span> k, E x)</span> </span>&#123;</span><br><span class="line">    Comparable&lt;? <span class="keyword">super</span> E&gt; key = (Comparable&lt;? <span class="keyword">super</span> E&gt;) x;</span><br><span class="line">    <span class="keyword">while</span> (k &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> parent = (k - <span class="number">1</span>) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        Object e = queue[parent];</span><br><span class="line">        <span class="keyword">if</span> (key.compareTo((E) e) &gt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        queue[k] = e;</span><br><span class="line">        k = parent;</span><br><span class="line">    &#125;</span><br><span class="line">    queue[k] = key;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">siftUpUsingComparator</span><span class="params">(<span class="keyword">int</span> k, E x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (k &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> parent = (k - <span class="number">1</span>) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        Object e = queue[parent];</span><br><span class="line">        <span class="keyword">if</span> (comparator.compare(x, (E) e) &gt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        queue[k] = e;</span><br><span class="line">        k = parent;</span><br><span class="line">    &#125;</span><br><span class="line">    queue[k] = x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里自作简单比较，使用选择排序法将入列的元素放左边或者右边.<br>从源码上看PriorityQueue的入列操作并没对所有加入的元素进行优先级排序。仅仅保证数组第一个元素是最小的即可。</p>
+<h5 id="2、出列"><a href="#2、出列" class="headerlink" title="2、出列"></a>2、出列</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">poll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">int</span> s = --size;</span><br><span class="line">    modCount++;</span><br><span class="line">    E result = (E) queue[<span class="number">0</span>];</span><br><span class="line">    E x = (E) queue[s];</span><br><span class="line">    queue[s] = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (s != <span class="number">0</span>)</span><br><span class="line">        siftDown(<span class="number">0</span>, x);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">siftDown</span><span class="params">(<span class="keyword">int</span> k, E x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (comparator != <span class="keyword">null</span>)</span><br><span class="line">        siftDownUsingComparator(k, x);  <span class="comment">//指定比较器</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        siftDownComparable(k, x);    <span class="comment">//默认比较器</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">siftDownComparable</span><span class="params">(<span class="keyword">int</span> k, E x)</span> </span>&#123;</span><br><span class="line">        Comparable&lt;? <span class="keyword">super</span> E&gt; key = (Comparable&lt;? <span class="keyword">super</span> E&gt;)x;</span><br><span class="line">        <span class="keyword">int</span> half = size &gt;&gt;&gt; <span class="number">1</span>;        <span class="comment">// loop while a non-leaf</span></span><br><span class="line">        <span class="keyword">while</span> (k &lt; half) &#123;</span><br><span class="line">            <span class="keyword">int</span> child = (k &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>; <span class="comment">// assume left child is least</span></span><br><span class="line">            Object c = queue[child];</span><br><span class="line">            <span class="keyword">int</span> right = child + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (right &lt; size &amp;&amp;</span><br><span class="line">                ((Comparable&lt;? <span class="keyword">super</span> E&gt;) c).compareTo((E) queue[right]) &gt; <span class="number">0</span>)</span><br><span class="line">                c = queue[child = right];</span><br><span class="line">            <span class="keyword">if</span> (key.compareTo((E) c) &lt;= <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            queue[k] = c;</span><br><span class="line">            k = child;</span><br><span class="line">        &#125;</span><br><span class="line">        queue[k] = key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">siftDownUsingComparator</span><span class="params">(<span class="keyword">int</span> k, E x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> half = size &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (k &lt; half) &#123;</span><br><span class="line">            <span class="keyword">int</span> child = (k &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">            Object c = queue[child];</span><br><span class="line">            <span class="keyword">int</span> right = child + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (right &lt; size &amp;&amp;</span><br><span class="line">                comparator.compare((E) c, (E) queue[right]) &gt; <span class="number">0</span>)</span><br><span class="line">                c = queue[child = right];</span><br><span class="line">            <span class="keyword">if</span> (comparator.compare(x, (E) c) &lt;= <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            queue[k] = c;</span><br><span class="line">            k = child;</span><br><span class="line">        &#125;</span><br><span class="line">        queue[k] = x;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>上面源码，当第一个元素出列之后，对剩下的元素进行再排序，挑选出最小的元素排在数组第一个位置。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>1、PriorityQueue是一种无界的，线程不安全的队列，因为offer/poll都没有对队列进行锁定，所以，如果要拥有线程安全的优先级队列，需要额外进行加锁操作<br>2、PriorityQueue是一种通过数组实现的，并拥有优先级的队列<br>3、PriorityQueue存储的元素要求必须是可比较的对象， 如果不是就必须明确指定比较器</p>
+<p>Reference<br>1 <a href="https://www.jianshu.com/p/f1fd9b82cb72" target="_blank" rel="noopener">https://www.jianshu.com/p/f1fd9b82cb72</a><br>2 <a href="https://www.cnblogs.com/wei-jing/p/10806236.html" target="_blank" rel="noopener">https://www.cnblogs.com/wei-jing/p/10806236.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Queue/" rel="tag"># Queue</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/06/%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E4%B8%8E%E4%BD%8D%E8%BF%90%E7%AE%97/" rel="next" title="进制转换与位运算">
+                <i class="fa fa-chevron-left"></i> 进制转换与位运算
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------  Bye ------</div>
+    
+</div>
+    
+ </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/fern.jpg"
+                alt="Fern" />
+            
+              <p class="site-author-name" itemprop="name">Fern</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、优先队列概述"><span class="nav-number">1.</span> <span class="nav-text">一、优先队列概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、常用方法"><span class="nav-number">2.</span> <span class="nav-text">二、常用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、优先队列的使用"><span class="nav-number">3.</span> <span class="nav-text">三、优先队列的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、队列保存的是基本数据类型的包装类"><span class="nav-number">3.1.</span> <span class="nav-text">1、队列保存的是基本数据类型的包装类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、队列保存的是自定义类"><span class="nav-number">3.2.</span> <span class="nav-text">2、队列保存的是自定义类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3、优先队列的遍历"><span class="nav-number">3.3.</span> <span class="nav-text">3、优先队列的遍历</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4、比较器升降序说明"><span class="nav-number">3.4.</span> <span class="nav-text">4、比较器升降序说明</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、源码解析"><span class="nav-number">4.</span> <span class="nav-text">四、源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、入列"><span class="nav-number">4.1.</span> <span class="nav-text">1、入列</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、出列"><span class="nav-number">4.2.</span> <span class="nav-text">2、出列</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fern</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+<span class="post-meta-divider">|</span>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+  <div class="bg_content">
+     <canvas id="canvas"></canvas>
+  </div>
+</body>
+</html>
+
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>

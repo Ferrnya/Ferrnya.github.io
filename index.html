@@ -180,23 +180,9 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
             首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-            分类
           </a>
         </li>
       
@@ -204,7 +190,29 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
             归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            tools
           </a>
         </li>
       
@@ -227,6 +235,177 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="Ferrnya.github.io/2020/02/11/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97PriorityQueue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fern">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/fern.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fern's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/02/11/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97PriorityQueue/" itemprop="url">优先队列PriorityQueue</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-11T13:53:47+08:00">
+                2020-02-11
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-02-12T13:34:47+08:00">
+                2020-02-12
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="一、优先队列概述"><a href="#一、优先队列概述" class="headerlink" title="一、优先队列概述"></a>一、优先队列概述</h4><p>优先队列的本质是最小堆，每个父节点都比两个子节点小，但整个数组又不是完全顺序的。</p>
+<p>PriorityQueue是一个基于优先级的无界优先级队列。优先级队列的元素按照其自然顺序进行排序，或者根据构造队列时提供的 Comparator 进行排序，具体取决于所使用的构造方法。该队列不允许使用 null 元素也不允许插入不可比较的对象(没有实现Comparable接口的对象)。<br>PriorityQueue 队列的头指排序规则最小那个元素。如果多个元素都是最小值则随机选一个。<br>PriorityQueue 是一个无界队列，但是初始的容量(实际是一个Object[])，随着不断向优先级队列添加元素，其容量会自动扩容，无需指定容量增加策略的细节。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/02/11/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97PriorityQueue/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  <div>
+    
+ </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -288,8 +467,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-02-06T13:21:09+08:00">
-                2020-02-06
+              <time title="更新于" itemprop="dateModified" datetime="2020-02-12T13:36:52+08:00">
+                2020-02-12
               </time>
             
           </span>
@@ -307,8 +486,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
                   </a>
                 </span>
 
@@ -376,7 +555,7 @@
 
       
         
-          <h4 id="进制转换与位运算"><a href="#进制转换与位运算" class="headerlink" title="进制转换与位运算"></a>进制转换与位运算</h4><h5 id="一、进制转换"><a href="#一、进制转换" class="headerlink" title="一、进制转换"></a>一、进制转换</h5><p>1 基础内容<br>十进制：有十个基数 0,1,2,3,4,5,6,7,8,9<br>二进制：逢二进一，借一为二。基数为0,1<br>八进制：逢八进一，借一为八。基数为0,1,2,3,4,5,6,7<br>十六进制：逢十六进一，借一为十六。基数为0,1,2,3,4,5,6,7,8,9，A(10),B(11),C(12),D(13),E(14),F(15)</p>
+          <h4 id="进制转换与位运算"><a href="#进制转换与位运算" class="headerlink" title="进制转换与位运算"></a>进制转换与位运算</h4><h5 id="一、进制转换"><a href="#一、进制转换" class="headerlink" title="一、进制转换"></a>一、进制转换</h5><h6 id="1-基础内容"><a href="#1-基础内容" class="headerlink" title="1 基础内容"></a>1 基础内容</h6><p>十进制：有十个基数 0,1,2,3,4,5,6,7,8,9<br>二进制：逢二进一，借一为二。基数为0,1<br>八进制：逢八进一，借一为八。基数为0,1,2,3,4,5,6,7<br>十六进制：逢十六进一，借一为十六。基数为0,1,2,3,4,5,6,7,8,9，A(10),B(11),C(12),D(13),E(14),F(15)</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2020/02/06/%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E4%B8%8E%E4%BD%8D%E8%BF%90%E7%AE%97/#more" rel="contents">
@@ -1617,7 +1796,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/11/25/linkedList-usage/" itemprop="url">LinkedList用法</a></h1>
+                <a class="post-title-link" href="/2019/11/25/linkedList-usage/" itemprop="url">linkedList-usage</a></h1>
         
 
         <div class="post-meta">
@@ -1645,34 +1824,12 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-12-19T10:32:12+08:00">
-                2019-12-19
+              <time title="更新于" itemprop="dateModified" datetime="2020-02-07T12:33:26+08:00">
+                2020-02-07
               </time>
             
           </span>
 
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -1733,7 +1890,8 @@
 
       
         
-          <h4 id="JAVA中LinkedList用法"><a href="#JAVA中LinkedList用法" class="headerlink" title="JAVA中LinkedList用法"></a>JAVA中LinkedList用法</h4><p>LinkedList类是双向列表,列表中的每个节点都包含了对前一个和后一个元素的引用。<br>LinkedList的构造函数如下</p>
+          <p>title: LinkedList用法<br>date: 2019-11-25 20:27:40<br>tags: 剑指offer<br>categories: 数据结构</p>
+<h4 id="JAVA中LinkedList用法"><a href="#JAVA中LinkedList用法" class="headerlink" title="JAVA中LinkedList用法"></a>JAVA中LinkedList用法</h4><p>LinkedList类是双向列表,列表中的每个节点都包含了对前一个和后一个元素的引用。<br>LinkedList的构造函数如下</p>
 <p>1 public LinkedList():  ——生成空的链表</p>
 <p>2 public LinkedList(Collection col):  复制构造函数</p>
 <p><strong>1获取链表的第一个元素和最后一个元素</strong></p>
@@ -1973,205 +2131,13 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="Ferrnya.github.io/2019/11/01/%E5%8E%9F%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E7%A7%BB%E7%A0%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Fern">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/fern.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Fern's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/01/%E5%8E%9F%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E7%A7%BB%E7%A0%81/" itemprop="url">原码、补码、反码、移码</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-01T14:18:09+08:00">
-                2019-11-01
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-02-06T12:33:01+08:00">
-                2020-02-06
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  193
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="原码、反码、补码和移码"><a href="#原码、反码、补码和移码" class="headerlink" title="原码、反码、补码和移码"></a>原码、反码、补码和移码</h4><p><br><strong>原码</strong>：正数是其二进制本身；负数是符号位为1,数值部分取X绝对值的二进制。 </p>
-<p><strong>反码</strong>：正数的反码和原码相同；负数是符号位为1,其它位是原码取反。 </p>
-<p><strong>补码</strong>：正数的补码和原码，反码相同；负数是符号位为1，其它位是原码取反，末位加1。（或者说负数的补码是其绝对值反码末位加1） </p>
-<p><strong>移码</strong>：将符号位取反的补码（不区分正负）</p>
-<p>即正数的原码、反码、补码都相同，移码为最高位0变1</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/11/01/%E5%8E%9F%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E7%A7%BB%E7%A0%81/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  <div>
-    
- </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&lt;i class=&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+  </nav>
+
 
 
           </div>
@@ -2219,7 +2185,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2241,7 +2207,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2278,7 +2244,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
@@ -2288,15 +2254,9 @@
 </div>
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
 
 
 
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
