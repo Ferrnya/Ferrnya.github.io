@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="消息队列," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文针对项目中使用的Active MQ消息队列进行深入学习。 本文针对如下几点进行阐述： 1、为什么使用消息队列？ 2、使用消息队列有什么缺点？ 3、消息队列如何选型？ 4、如何保证消息队列是高可用的？ 5、如何保证消息队列不被重复消费？ 6、如何保证消费的可靠性传播？ 7、如何保证消息的顺序性？">
+<meta name="keywords" content="消息队列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="消息队列">
+<meta property="og:url" content="https:&#x2F;&#x2F;ferrnya.github.io&#x2F;2020&#x2F;02&#x2F;29&#x2F;%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97&#x2F;index.html">
+<meta property="og:site_name" content="Fern&#39;s Blog">
+<meta property="og:description" content="本文针对项目中使用的Active MQ消息队列进行深入学习。 本文针对如下几点进行阐述： 1、为什么使用消息队列？ 2、使用消息队列有什么缺点？ 3、消息队列如何选型？ 4、如何保证消息队列是高可用的？ 5、如何保证消息队列不被重复消费？ 6、如何保证消费的可靠性传播？ 7、如何保证消息的顺序性？">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https:&#x2F;&#x2F;ferrnya.github.io&#x2F;images&#x2F;xiaoxi&#x2F;1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;ferrnya.github.io&#x2F;images&#x2F;xiaoxi&#x2F;2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;ferrnya.github.io&#x2F;images&#x2F;xiaoxi&#x2F;3.png">
+<meta property="og:updated_time" content="2020-02-29T13:54:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;ferrnya.github.io&#x2F;images&#x2F;xiaoxi&#x2F;1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://Ferrnya.github.io/2020/02/29/消息队列/"/>
+
+
+
+
+
+  <title>消息队列 | Fern's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fern's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一只想要拥有好睡眠的羊</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            tools
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://Ferrnya.github.io/2020/02/29/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fern">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/fern.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fern's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">消息队列</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-29T18:53:35+08:00">
+                2020-02-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-02-29T21:54:44+08:00">
+                2020-02-29
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文针对项目中使用的Active MQ消息队列进行深入学习。</p>
+<p>本文针对如下几点进行阐述：</p>
+<p>1、为什么使用消息队列？</p>
+<p>2、使用消息队列有什么缺点？</p>
+<p>3、消息队列如何选型？</p>
+<p>4、如何保证消息队列是高可用的？</p>
+<p>5、如何保证消息队列不被重复消费？</p>
+<p>6、如何保证消费的可靠性传播？</p>
+<p>7、如何保证消息的顺序性？</p>
+<a id="more"></a>
+
+<h4 id="为什么使用消息队列"><a href="#为什么使用消息队列" class="headerlink" title="为什么使用消息队列"></a>为什么使用消息队列</h4><ul>
+<li><p><strong>解耦</strong>：系统耦合性太强，所以将消息写入消息队列，需要消息的系统自己从消息队列中订阅，二发布消息的系统不需要做任何改变</p>
+<p><img src="/images/xiaoxi/1.png" alt="1"></p>
+</li>
+<li><p><strong>异步</strong>：将消息写入消息队列，非必要的业务逻辑以异步的方式运行，加快响应速度</p>
+<p><img src="/images/xiaoxi/2.png" alt="2"></p>
+</li>
+<li><p><strong>削峰</strong>：MQ会提供两种模式消息获取方式：1-server推模式，2-client拉模式，MQ-client根据自己的处理能力，每隔一定时间，或者每次拉取若干条消息，实施流控，达到保护自身的效果。并且这是MQ提供的通用功能，无需上下游修改代码。</p>
+<p><img src="/images/xiaoxi/3.png" alt="3"></p>
+</li>
+<li><p><strong>延时队列</strong>：采用轮询db的方式做了太多的无用功，采用Jdk原生的延时队列无法应对应用重启的情况，而MQ自带了延时推送的功能，是延时任务上理想的解决方案。</p>
+</li>
+</ul>
+<h4 id="使用消息队列会有什么缺点"><a href="#使用消息队列会有什么缺点" class="headerlink" title="使用消息队列会有什么缺点"></a>使用消息队列会有什么缺点</h4><ul>
+<li><strong>系统可用性降低</strong>。需要考虑更多的问题：如何保证消息没有重复消费？如何处理消息丢失的情况？如何保证消息传递的顺序性。</li>
+<li><strong>系统复杂性增加</strong>。要多考虑很多方面的问题，比如一致性问题，原本A的响应需要BC的成功，用同步操作是没有问题的，但如果为了提高响应在解耦后B成功而C调用失败，而A已经给了客户成功的响应，这里就会有结果处理不一致的问题。</li>
+</ul>
+<h4 id="消息队列如何选型"><a href="#消息队列如何选型" class="headerlink" title="消息队列如何选型"></a>消息队列如何选型</h4><ul>
+<li><strong>ActiveMQ</strong>非常成熟，功能强大，在业内大量的公司以及项目中都有应用，偶尔会有较低概率丢失消息；现在社区以及国内应用都越来越少，官方社区现在对ActiveMQ 5.x维护越来越少，几个月才发布一个版本。而且确实主要是基于解耦和异步来用的，较少在大规模吞吐的场景中使用，适用于小公司业务规模不大的场景。</li>
+<li><strong>RabbitMQ</strong>是由Erlang语言开发，性能极其好，延时很低；吞吐量到万级，MQ功能比较完备，而且开源提供的管理界面非常棒；社区相对比较活跃，几乎每个月都发布几个版本分在国内一些互联网公司近几年用rabbitmq也比较多一些。<br>但是问题也是显而易见的，RabbitMQ确实吞吐量会低一些，这是因为他做的实现机制比较重。而且Erlang开发，很难去看懂源码，掌控很弱，基本职能依赖于开源社区的快速维护和修复bug。而且Rabbitmq集群动态扩展会很麻烦。</li>
+<li><strong>RocketMQ</strong>接口简单易用，有阿里背书，日处理消息上百亿之多，可以做到大规模吞吐，性能也非常好，分布式扩展也很方便，社区维护还可以，可靠性和可用性都是可以，还可以支撑大规模的topic数量，支持复杂MQ业务场景，而且一个很大的优势在于，阿里出品都是java系的，我们可以自己阅读源码，定制自己公司的MQ，可以掌控。社区活跃度相对较为一般，文档相对来说简单，然后接口这块不是按照标准JMS规范走的有些系统要迁移需要修改大量代码。</li>
+<li><strong>Kafka</strong>的特点明显——仅仅提供较少的核心功能，但是提供超高的吞吐量，ms级的延迟，极高的可用性以及可靠性，而且分布式可以任意扩展。同时kafka最好是支撑较少的topic数量即可，保证其超高吞吐量，而且kafka唯一的一点劣势是有可能消息重复消费，那么对数据准确性会造成极其轻微的影响，在大数据领域中以及日志采集中，这点轻微影响可以忽略，这个特性天然适合大数据实时计算以及日志收集。</li>
+</ul>
+<h4 id="如何保证消息队列是高可用的"><a href="#如何保证消息队列是高可用的" class="headerlink" title="如何保证消息队列是高可用的"></a>如何保证消息队列是高可用的</h4><p><strong>RabbitMQ</strong>方面采用的是镜像队列的来保证服务的高可用，基于主从架构。引入RabbitMQ的镜像队列机制，将queue镜像到cluster中其他的节点之上。在该实现下，如果集群中的一个节点失效了，queue能自动地切换到镜像中的另一个节点以保证服务的可用性。在通常的用法中，针对每一个镜像队列都包含一个master和多个slave，分别对应于不同的节点。slave会准确地按照master执行命令的顺序进行命令执行，故slave与master上维护的状态应该是相同的。</p>
+<h4 id="如何保证消费队列不被重复消费、如何保证消费队列的幂等性"><a href="#如何保证消费队列不被重复消费、如何保证消费队列的幂等性" class="headerlink" title="如何保证消费队列不被重复消费、如何保证消费队列的幂等性"></a>如何保证消费队列不被重复消费、如何保证消费队列的幂等性</h4><p>为什么会造成重复消费？</p>
+<p>因为网络传输等等故障，确认信息没有传送到消息队列，导致消息队列不知道自己已经消费过该消息了，再次将该消息分发给其他的消费者。</p>
+<p>如何做？</p>
+<p>其实无论是哪种消息队列，造成重复消费原因其实都是类似的。正常情况下，消费者在消费消息时候，消费完毕后，会发送一个确认信息给消息队列，消息队列就知道该消息被消费了，就会将该消息从消息队列中删除，只是不同的消息队列发送的确认信息形式不同。例如RabbitMQ是发送一个ACK确认消息，RocketMQ是返回一个CONSUME_SUCCESS成功标志，kafka实际上有个offset的概念，简单说一下(如果还不懂，出门找一个kafka入门到精通教程),就是每一个消息都有一个offset，kafka消费过消息后，需要提交offset，让消息队列知道自己已经消费过了。例如以下业务场景：</p>
+<p>（1）拿到这个消息做数据库的insert操作。可以给这个消息做一个唯一主键，那么就算出现重复消费的情况，就会导致主键冲突，避免数据库出现脏数据。</p>
+<p>（2）再比如，你拿到这个消息做redis的set的操作，不用解决，因为你无论set几次结果都是一样的，set操作本来就算幂等操作。</p>
+<p>（3）如果上面两种情况还不行，准备一个第三方介质,来做消费记录。以redis为例，给消息分配一个全局id，只要消费过该消息，将&lt;id,message&gt;以K-V形式写入redis。那消费者开始消费前，先去redis中查询有没消费记录即可。</p>
+<h4 id="如何保证消息的可靠性传输"><a href="#如何保证消息的可靠性传输" class="headerlink" title="如何保证消息的可靠性传输"></a>如何保证消息的可靠性传输</h4><p>从三个角度分析：生产者弄丢数据、消息队列弄丢数据、消费者弄丢数据</p>
+<p>对于JMS的Active MQ来说：</p>
+<ul>
+<li><p>消息接受确认</p>
+<ul>
+<li><p>jms消息只有在被确认之后才认为成功消费了这条消息。消息的成功消费通常包括三个步骤：（1）client接收消息 （2）client处理消息 （3）消息被确认（也就是client给一个确认消息）。不管是事务性会话还是非事务性会话，第一步和第二步都一样但第三步有所不同。</p>
+</li>
+<li><p>在事务性会话中当一个事务被提交的时候，确认自动发生，和应答模式没关系，这个值可以随便写。（但是用事务性会话）</p>
+</li>
+<li><p>在非事务性会话中消息何时被确认取决于创建的session中设置的消息应答模式（acknowledge model）该参数有三个值：</p>
+<ul>
+<li><p>Session.AUTO_ACKNOWLEDGE：当client端成功的从receive方法或从onMessage(Message message) 方法返回的时候，会话自动确认client收到消息。</p>
+</li>
+<li><p>Session.CLIENT_ACKNOWLEDGE: 客户单通过调用acknowledge方法来确认客户端收到消息。但需要注意在这种应答模式下，确认是在会话层上进行的，确认一个被消费的消息将自动确认所有已消费的其他消息。比如一个消费者已经消费了10条消息，然后确认了第5条消息被消费，则这10条都被确认消费了。</p>
+<p>同步接收，调用acknowledge（）方法进行确认：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">consumer = session.createConsumer(queue); <span class="comment">// 消息消费者</span></span><br><span class="line">Message message = consumer.receive(); <span class="comment">//同步方式接收</span></span><br><span class="line">message.acknowledge(); <span class="comment">//消息消费确认通知</span></span><br></pre></td></tr></table></figure>
+
+<p>异步接受，调用acknowledge（）方法进行确认：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">consumer.setMessageListener(<span class="keyword">new</span> MessageListener() &#123;</span><br><span class="line">				<span class="meta">@Override</span></span><br><span class="line">				<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</span><br><span class="line">					TextMessage textMessage = (TextMessage) message;</span><br><span class="line">					<span class="keyword">try</span> &#123;</span><br><span class="line">						String value = textMessage.getText();</span><br><span class="line">						System.out.println(<span class="string">"value: "</span> + value);</span><br><span class="line">						message.acknowledge(); <span class="comment">//消息消费确认通知</span></span><br><span class="line">					&#125; <span class="keyword">catch</span> (JMSException e) &#123;</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Session.DUPS_ACKNOWLEDGE：不是必须签收，消息可能会重复发送。在第二次重新传送消息的时候，消息头的JmsDelivered会被置为true标示当前消息已经传送过一次，客户端需要进行消息的重复处理控制。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>总结：</p>
+<p>1、transacted事务，事务成功commit,才会将消息发送到mom中<br>2、acknowledgeMode消息确认机制<br>1）带事务的session：如果session带有事务，并且事务成功提交，则消息被自动签收。如果事务回滚，则消息会被再次传送。<br> 2）不带事务的session </p>
+<pre><code>不带事务的session的签收方式，取决于session的配置。 
+ Activemq支持一下三種模式： 
+         Session.AUTO_ACKNOWLEDGE  消息自动签收 
+         Session.CLIENT_ACKNOWLEDGE  客戶端调用acknowledge方法手动签收 
+         Session.DUPS_OK_ACKNOWLEDGE 不是必须签收，消息可能会重复发送。在第二次重新传送消息的时候，消息头的JmsDelivered会被置为true标示当前消息已经传送过一次，客户端需要进行消息的重复处理控制。</code></pre></li>
+<li><p>发送持久化</p>
+<ul>
+<li><p>PERSISTENT：<u>指示JMS Provider持久保存消息</u>，会把消息持久化到磁盘以保证消息不会因为JMS provider、JMS Server 的失败而丢失。</p>
+</li>
+<li><p>NON_PERSISTENT：<u>不要求JMS Provider持久保存消息</u>。如果JMS Server 重启则消息就丢死了，消费端也就会失去这条消息。</p>
+</li>
+<li><p>消息的持久化设置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MessageProducer producer = session.createProducer(queue);</span><br><span class="line"><span class="comment">// 消息是否为持久性的，如果不设置默认是持久化的。</span></span><br><span class="line"><span class="comment">// producer.setDeliveryMode(DeliveryMode.PERSISTENT);</span></span><br><span class="line"><span class="comment">//非持久化消息，消息是不会持久化到磁盘的，发送后如果服务关闭再次开启则消息会丢失。</span></span><br><span class="line">producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="如何保证消息的顺序性"><a href="#如何保证消息的顺序性" class="headerlink" title="如何保证消息的顺序性"></a>如何保证消息的顺序性</h4><p>Queue中的消息是按照顺序发送给Consumers的。然而，当你有多个Consumer同时从相同的Queue提取消息时，顺序将不能得到保证。因为这些消息时被多个线程并发的处理。但是，有时候保证消息的顺序是很重要的。例如，你可能不希望插入订单操作结束之前执行更新订单的操作。在Active MQ中可以通过Exclusive Consumer和Message Groups来实现这一目的。</p>
+<ul>
+<li><p>Exclusive Consumer 独有消费者</p>
+<p>Broker会从多个Consumer中挑选一个Consumer来处理所有的消息，从而保证消息的有序处理。如果这个Consumer失效，那么Broker会自动切换到其他的Consumer。</p>
+<p>可以通过Destination的Option来创建一个Exclusive Consumer，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">queue = <span class="keyword">new</span> ActiveMQQueue(<span class="string">"Test.Queue?consumer.exclusive=true"</span>);</span><br><span class="line">consumer = session.createConsumer(queue);</span><br></pre></td></tr></table></figure>
+
+<p>另外，还可以给Consumer设置优先级，以便针对网络情况进行优化。如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">queue = <span class="keyword">new</span> ActiveMQQueue(<span class="string">"Test.Queue?consumer.exclusive = true&amp;consumer.priority=10"</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Message Groups 消息分组</p>
+<p>可以看成是一种并发的Exclusive Consumer。JMS消息属性JMXGroupID被用来区分Message Group。Message Groups特性保证所有具有相同JMSGroupID的消息会被分发到相同的Consumer（只要这个Consumer保持Active）。另一方面，Message Groups也是一种负载均衡的机制。</p>
+<p>在一个消息被分发到Consumer前，Broker会检查消息的JMSGroupID属性。如果存在，那么broker会检查是否有某个Consumer拥有这个Message Group。如果没有，那么broker会选择一个Consumer，并将它关联到这个Message Group。此后，这个Consumer会接收这个Message Group的所有消息。直到：</p>
+<ul>
+<li>Consumer被关闭。</li>
+<li>Message Group被关闭。通过发送一个消息，并设置这个消息的JMSXGroupSeq为-1。</li>
+</ul>
+<p>创建一个Message Groups，只需要在Message对象上设置属性即可。如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Message message = session.createTextMessage(<span class="string">"hello,world"</span>);</span><br><span class="line">message.setStringProperty(<span class="string">"JMSXGroupID"</span>,<span class="string">"GroupA"</span>);</span><br><span class="line">...</span><br><span class="line">producer.send(message);</span><br></pre></td></tr></table></figure>
+
+<p>关闭一个Message Group，也只需要在Message对象上设置相应的属性即可。如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">message.setStringProperty(<span class="string">"JMSXGroupID"</span>,<span class="string">"GroupA"</span>);</span><br><span class="line">message.setIntProperty(<span class="string">"JMSXGroupSeq"</span>, -<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag"># 消息队列</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/16/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="next" title="动态规划">
+                <i class="fa fa-chevron-left"></i> 动态规划
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------  Bye ------</div>
+    
+</div>
+    
+ </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/fern.jpg"
+                alt="Fern" />
+            
+              <p class="site-author-name" itemprop="name">Fern</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么使用消息队列"><span class="nav-number">1.</span> <span class="nav-text">为什么使用消息队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用消息队列会有什么缺点"><span class="nav-number">2.</span> <span class="nav-text">使用消息队列会有什么缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消息队列如何选型"><span class="nav-number">3.</span> <span class="nav-text">消息队列如何选型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何保证消息队列是高可用的"><span class="nav-number">4.</span> <span class="nav-text">如何保证消息队列是高可用的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何保证消费队列不被重复消费、如何保证消费队列的幂等性"><span class="nav-number">5.</span> <span class="nav-text">如何保证消费队列不被重复消费、如何保证消费队列的幂等性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何保证消息的可靠性传输"><span class="nav-number">6.</span> <span class="nav-text">如何保证消息的可靠性传输</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何保证消息的顺序性"><span class="nav-number">7.</span> <span class="nav-text">如何保证消息的顺序性</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fern</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+<span class="post-meta-divider">|</span>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+  <div class="bg_content">
+     <canvas id="canvas"></canvas>
+  </div>
+</body>
+</html>
+
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
