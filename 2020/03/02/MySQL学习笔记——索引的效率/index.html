@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="MySQL," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文针对项目中存在的数据库优化相关内容进行学习 本文针对如下几点进行阐述： 1、索引的优化 2、查询性能的优化 3、存储引擎">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL学习笔记——索引的效率">
+<meta property="og:url" content="https:&#x2F;&#x2F;ferrnya.github.io&#x2F;2020&#x2F;03&#x2F;02&#x2F;MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E7%B4%A2%E5%BC%95%E7%9A%84%E6%95%88%E7%8E%87&#x2F;index.html">
+<meta property="og:site_name" content="Fern&#39;s Blog">
+<meta property="og:description" content="本文针对项目中存在的数据库优化相关内容进行学习 本文针对如下几点进行阐述： 1、索引的优化 2、查询性能的优化 3、存储引擎">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-03-02T05:10:31.000Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://Ferrnya.github.io/2020/03/02/MySQL学习笔记——索引的效率/"/>
+
+
+
+
+
+  <title>MySQL学习笔记——索引的效率 | Fern's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fern's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一只想要拥有好睡眠的羊</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            tools
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://Ferrnya.github.io/2020/03/02/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E7%B4%A2%E5%BC%95%E7%9A%84%E6%95%88%E7%8E%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fern">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/fern.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fern's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MySQL学习笔记——索引的效率</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-02T12:43:12+08:00">
+                2020-03-02
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-03-02T13:10:31+08:00">
+                2020-03-02
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4%E9%A1%B9%E7%9B%AE/" itemprop="url" rel="index">
+                    <span itemprop="name">实验室项目</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文针对项目中存在的数据库优化相关内容进行学习</p>
+<p>本文针对如下几点进行阐述：</p>
+<p>1、索引的优化</p>
+<p>2、查询性能的优化</p>
+<p>3、存储引擎</p>
+<a id="more"></a>
+
+<h4 id="一、索引优化"><a href="#一、索引优化" class="headerlink" title="一、索引优化"></a>一、索引优化</h4><h5 id="1、独立的列"><a href="#1、独立的列" class="headerlink" title="1、独立的列"></a>1、独立的列</h5><p>在进行查询时，索引列不能是表达式的一部分，也不能是函数的参数，否则无法使用索引。</p>
+<p>例如下面的查询不能使用 actor_id 列的索引：</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> actor_id <span class="keyword">FROM</span> sakila.actor <span class="keyword">WHERE</span> actor_id + <span class="number">1</span> = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2、多列索引"><a href="#2、多列索引" class="headerlink" title="2、多列索引"></a>2、多列索引</h5><p>在需要使用多个列作为条件进行查询时，使用多列索引比使用多个单列索引性能更好。例如下面的语句中，最好把 actor_id 和 film_id 设置为多列索引。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> film_id, actor_ <span class="keyword">id</span> <span class="keyword">FROM</span> sakila.film_actor</span><br><span class="line"><span class="keyword">WHERE</span> actor_id = <span class="number">1</span> <span class="keyword">AND</span> film_id = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3、索引列的顺序"><a href="#3、索引列的顺序" class="headerlink" title="3、索引列的顺序"></a>3、索引列的顺序</h5><p>让选择性最强的索引列放在前面。</p>
+<p>索引的选择性是指：不重复的索引值和记录总数的比值。最大值为 1，此时每个记录都有唯一的索引与其对应。选择性越高，查询效率也越高。</p>
+<p>例如下面显示的结果中 customer_id 的选择性比 staff_id 更高，因此最好把 customer_id 列放在多列索引的前面。</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> COUNT(<span class="keyword">DISTINCT</span> staff_id)/COUNT<span class="comment">(*) AS staff_id_selectivity,</span></span><br><span class="line"><span class="comment">COUNT(DISTINCT customer_id)/COUNT(*)</span> <span class="keyword">AS</span> customer_id_selectivity,</span><br><span class="line">COUNT<span class="comment">(*)</span></span><br><span class="line"><span class="comment">FROM payment;</span></span><br><span class="line"><span class="comment">   staff_id_selectivity: 0.0001</span></span><br><span class="line"><span class="comment">customer_id_selectivity: 0.0373</span></span><br><span class="line"><span class="comment">               COUNT(*)</span>: <span class="number">16049</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="4、前缀索引"><a href="#4、前缀索引" class="headerlink" title="4、前缀索引"></a>4、前缀索引</h5><p>对于 BLOB、TEXT 和 VARCHAR 类型的列，必须使用前缀索引，<u>只索引开始的部分字符</u>。</p>
+<p>对于前缀长度的选取需要根据索引选择性来确定。</p>
+<h5 id="5、覆盖索引"><a href="#5、覆盖索引" class="headerlink" title="5、覆盖索引"></a>5、覆盖索引</h5><p>索引包含所有需要查询的字段的值。</p>
+<p>具有以下优点：</p>
+<ul>
+<li>索引通常远小于数据行的大小，只读取索引能大大减少数据访问量。</li>
+<li>一些存储引擎（例如 MyISAM）在内存中只缓存索引，而数据依赖于操作系统来缓存。因此，只访问索引可以不使用系统调用（通常比较费时）。</li>
+<li>对于 InnoDB 引擎，若辅助索引能够覆盖查询，则无需访问主索引。</li>
+</ul>
+<h4 id="索引的优点"><a href="#索引的优点" class="headerlink" title="索引的优点"></a>索引的优点</h4><ul>
+<li>大大减少了服务器需要扫描的数据行数。</li>
+<li>帮助服务器避免进行排序和分组，以及避免创建临时表（B+Tree 索引是有序的，可以用于 ORDER BY 和 GROUP BY 操作。临时表主要是在排序和分组过程中创建，因为不需要排序和分组，也就不需要创建临时表）。</li>
+<li>将随机 I/O 变为顺序 I/O（B+Tree 索引是有序的，会将相邻的数据都存储在一起）。</li>
+</ul>
+<h4 id="索引的使用条件"><a href="#索引的使用条件" class="headerlink" title="索引的使用条件"></a>索引的使用条件</h4><ul>
+<li>对于非常小的表、大部分情况下简单的全表扫描比建立索引更高效；</li>
+<li>对于中到大型的表，索引就非常有效；</li>
+<li>但是对于特大型的表，建立和维护索引的代价将会随之增长。这种情况下，需要用到一种技术可以直接区分出需要查询的一组数据，而不是一条记录一条记录地匹配，例如可以使用分区技术。</li>
+</ul>
+<h4 id="二、查询性能优化"><a href="#二、查询性能优化" class="headerlink" title="二、查询性能优化"></a>二、查询性能优化</h4><h5 id="1、使用Explain进行分析"><a href="#1、使用Explain进行分析" class="headerlink" title="1、使用Explain进行分析"></a>1、使用Explain进行分析</h5><p>Explain 用来分析 SELECT 查询语句，开发人员可以通过分析 Explain 结果来优化查询语句。</p>
+<p>比较重要的字段有：</p>
+<ul>
+<li>select_type : 查询类型，有简单查询、联合查询、子查询等</li>
+<li>key : 使用的索引</li>
+<li>rows : 扫描的行数</li>
+</ul>
+<h5 id="2、优化数据访问"><a href="#2、优化数据访问" class="headerlink" title="2、优化数据访问"></a>2、优化数据访问</h5><ul>
+<li><p>减少请求的数据量</p>
+<ul>
+<li>只返回必要的列：最好不要使用 SELECT * 语句。</li>
+<li>只返回必要的行：使用 LIMIT 语句来限制返回的数据。</li>
+<li>缓存重复查询的数据：使用缓存可以避免在数据库中进行查询，特别在要查询的数据经常被重复查询时，缓存带来的查询性能提升将会是非常明显的。</li>
+</ul>
+</li>
+<li><p>减少服务器端扫描的行数</p>
+<p>最有效的方式是使用索引来覆盖查询。</p>
+</li>
+</ul>
+<h5 id="3、重构查询方式"><a href="#3、重构查询方式" class="headerlink" title="3、重构查询方式"></a>3、重构查询方式</h5><ul>
+<li><p>切分大查询</p>
+<p>一个大查询如果一次性执行的话，可能一次锁住很多数据、占满整个事务日志、耗尽系统资源、阻塞很多小的但重要的查询。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> messages <span class="keyword">WHERE</span> <span class="keyword">create</span> &lt; <span class="keyword">DATE_SUB</span>(<span class="keyword">NOW</span>(), <span class="built_in">INTERVAL</span> <span class="number">3</span> <span class="keyword">MONTH</span>);</span><br><span class="line">rows_affected = 0</span><br><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    rows_affected = do_query(</span><br><span class="line">    <span class="string">"DELETE FROM messages WHERE create  &lt; DATE_SUB(NOW(), INTERVAL 3 MONTH) LIMIT 10000"</span>)</span><br><span class="line">&#125; <span class="keyword">while</span> rows_affected &gt; <span class="number">0</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分解大连接查询</p>
+<p>将一个大连接查询分解成对每一个表进行一次单表查询，然后在应用程序中进行关联，这样做的好处有：</p>
+<ul>
+<li>让缓存更高效。对于连接查询，如果其中一个表发生变化，那么整个查询缓存就无法使用。而分解后的多个查询，即使其中一个表发生变化，对其它表的查询缓存依然可以使用。</li>
+<li>分解成多个单表查询，这些单表查询的缓存结果更可能被其它查询使用到，从而减少冗余记录的查询。</li>
+<li>减少锁竞争；</li>
+<li>在应用层进行连接，可以更容易对数据库进行拆分，从而更容易做到高性能和可伸缩。</li>
+<li>查询本身效率也可能会有所提升。例如下面的例子中，使用 IN() 代替连接查询，可以让 MySQL 按照 ID 顺序进行查询，这可能比随机的连接要更高效。</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tab</span><br><span class="line"><span class="keyword">JOIN</span> tag_post <span class="keyword">ON</span> tag_post.tag_id=tag.id</span><br><span class="line"><span class="keyword">JOIN</span> post <span class="keyword">ON</span> tag_post.post_id=post.id</span><br><span class="line"><span class="keyword">WHERE</span> tag.tag=<span class="string">'mysql'</span>;</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tag <span class="keyword">WHERE</span> tag=<span class="string">'mysql'</span>;</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tag_post <span class="keyword">WHERE</span> tag_id=<span class="number">1234</span>;</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> post <span class="keyword">WHERE</span> post.id <span class="keyword">IN</span> (<span class="number">123</span>,<span class="number">456</span>,<span class="number">567</span>,<span class="number">9098</span>,<span class="number">8904</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+
+</li>
+</ul>
+<h4 id="三、搜索引擎"><a href="#三、搜索引擎" class="headerlink" title="三、搜索引擎"></a>三、搜索引擎</h4><h5 id="1、InnoDB"><a href="#1、InnoDB" class="headerlink" title="1、InnoDB"></a>1、InnoDB</h5><p>是 MySQL 默认的事务型存储引擎，只有在需要它不支持的特性时，才考虑使用其它存储引擎。</p>
+<p>实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ 间隙锁（Next-Key Locking）防止幻影读。</p>
+<p>主索引是聚簇索引，在索引中保存了数据，从而避免直接读取磁盘，因此对查询性能有很大的提升。</p>
+<p>内部做了很多优化，包括从磁盘读取数据时采用的可预测性读、能够加快读操作并且自动创建的自适应哈希索引、能够加速插入操作的插入缓冲区等。</p>
+<p>支持真正的在线热备份。其它存储引擎不支持在线热备份，要获取一致性视图需要停止对所有表的写入，而在读写混合场景中，停止写入可能也意味着停止读取。</p>
+<h5 id="2、MySIAM"><a href="#2、MySIAM" class="headerlink" title="2、MySIAM"></a>2、MySIAM</h5><p>设计简单，数据以紧密格式存储。对于只读数据，或者表比较小、可以容忍修复操作，则依然可以使用它。</p>
+<p>提供了大量的特性，包括压缩表、空间数据索引等。</p>
+<p>不支持事务。</p>
+<p>不支持行级锁，只能对整张表加锁，读取时会对需要读到的所有表加共享锁，写入时则对表加排它锁。但在表有读取操作的同时，也可以往表中插入新的记录，这被称为并发插入（CONCURRENT INSERT）。</p>
+<p>可以手工或者自动执行检查和修复操作，但是和事务恢复以及崩溃恢复不同，可能导致一些数据丢失，而且修复操作是非常慢的。</p>
+<p>如果指定了 DELAY_KEY_WRITE 选项，在每次修改执行完成时，不会立即将修改的索引数据写入磁盘，而是会写到内存中的键缓冲区，只有在清理键缓冲区或者关闭表的时候才会将对应的索引块写入磁盘。这种方式可以极大的提升写入性能，但是在数据库或者主机崩溃时会造成索引损坏，需要执行修复操作。</p>
+<h5 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h5><ul>
+<li>事务：InnoDB 是事务型的，可以使用 Commit 和 Rollback 语句。</li>
+<li>并发：MyISAM 只支持表级锁，而 InnoDB 还支持行级锁。</li>
+<li>外键：InnoDB 支持外键。</li>
+<li>备份：InnoDB 支持在线热备份。</li>
+<li>崩溃恢复：MyISAM 崩溃后发生损坏的概率比 InnoDB 高很多，而且恢复的速度也更慢。</li>
+<li>其它特性：MyISAM 支持压缩表和空间数据索引。</li>
+</ul>
+<h5 id="建立索引的基本规则"><a href="#建立索引的基本规则" class="headerlink" title="建立索引的基本规则"></a>建立索引的基本规则</h5><h5 id="1-最左匹配原则"><a href="#1-最左匹配原则" class="headerlink" title="1. 最左匹配原则"></a>1. 最左匹配原则</h5><p><strong>mysql会一直向右匹配直到遇到范围查询(&gt;、&lt;、between、like)就停止匹配。</strong>比如a = 1 and b = 2 and c &gt; 3 and d = 4 如果建立(a,b,c,d)顺序的索引，d是用不到索引的，如果建立(a,b,d,c)的索引则都可以用到，a,b,d的顺序可以任意调整。（索引用的是<a href="https://zh.wikipedia.org/wiki/B%2B%E6%A0%91" target="_blank" rel="noopener">B+Tree</a>）</p>
+<h5 id="2-选择区分度高的列作为索引"><a href="#2-选择区分度高的列作为索引" class="headerlink" title="2. 选择区分度高的列作为索引"></a>2. 选择区分度高的列作为索引</h5><p>字段不重复的比例越大，扫描的记录条数越少，性能越好。区分度的公式是count(distinct col)/count(*)。比如status为0或1这种字段，建立索引实际上区分度极低，而像record_time这种区分度就比较大。</p>
+<h5 id="3-索引列不能参与计算"><a href="#3-索引列不能参与计算" class="headerlink" title="3. 索引列不能参与计算"></a>3. 索引列不能参与计算</h5><p>保持索引列的<strong>“干净”</strong>。假设在项目中有这样一个需求，匹配record_time这个时间列取出对应的数据，而数据库存储的格式和你查询的参数格式不一样，那么如果写成</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">where from_unixtime（record_time）= '2018-04-21'</span><br></pre></td></tr></table></figure>
+
+<p>索引就会失效。而这种情况下应当写成</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">where record_time= unix_timestamp('2018-04-21')</span><br></pre></td></tr></table></figure>
+
+<p>索引才会保证有效。</p>
+<h5 id="4-其它"><a href="#4-其它" class="headerlink" title="4. 其它"></a>4. 其它</h5><p>MySQL自己有自己的复杂度计算逻辑，它会决定在几个可用索引或不用索引中间选择一项来执行。有一些比较低级的问题MySQL会帮你解决。比如最普遍的where查询中，如果建立了（a,b,c)三个索引，而你写的筛选是where a = 1 and c =2 and b=2 是可以用到所有的索引部分的。但是请明白，实际上数据库在执行时会有智能的判断，按照a=1,b=2,c=2这样的顺序执行筛选。</p>
+<p>但是有一些时候mysql的“智能判断”也许并不是最优效率。对查询慢的语句，请不要着急去做更改。<strong>在查询语句前增加一个“explain”来查看数据库的执行计划总是一个非常好的习惯。</strong>通过看explain能够清楚的看到数据库哪些操作的执行效率可能会差。<a href="http://www.cnblogs.com/lori/p/8535037.html" target="_blank" rel="noopener">Mysql里的Explain说明</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/29/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="next" title="消息队列">
+                <i class="fa fa-chevron-left"></i> 消息队列
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------  Bye ------</div>
+    
+</div>
+    
+ </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/fern.jpg"
+                alt="Fern" />
+            
+              <p class="site-author-name" itemprop="name">Fern</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、索引优化"><span class="nav-number">1.</span> <span class="nav-text">一、索引优化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、独立的列"><span class="nav-number">1.1.</span> <span class="nav-text">1、独立的列</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、多列索引"><span class="nav-number">1.2.</span> <span class="nav-text">2、多列索引</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3、索引列的顺序"><span class="nav-number">1.3.</span> <span class="nav-text">3、索引列的顺序</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4、前缀索引"><span class="nav-number">1.4.</span> <span class="nav-text">4、前缀索引</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5、覆盖索引"><span class="nav-number">1.5.</span> <span class="nav-text">5、覆盖索引</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引的优点"><span class="nav-number">2.</span> <span class="nav-text">索引的优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引的使用条件"><span class="nav-number">3.</span> <span class="nav-text">索引的使用条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、查询性能优化"><span class="nav-number">4.</span> <span class="nav-text">二、查询性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、使用Explain进行分析"><span class="nav-number">4.1.</span> <span class="nav-text">1、使用Explain进行分析</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、优化数据访问"><span class="nav-number">4.2.</span> <span class="nav-text">2、优化数据访问</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3、重构查询方式"><span class="nav-number">4.3.</span> <span class="nav-text">3、重构查询方式</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、搜索引擎"><span class="nav-number">5.</span> <span class="nav-text">三、搜索引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、InnoDB"><span class="nav-number">5.1.</span> <span class="nav-text">1、InnoDB</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、MySIAM"><span class="nav-number">5.2.</span> <span class="nav-text">2、MySIAM</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#比较"><span class="nav-number">5.3.</span> <span class="nav-text">比较</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#建立索引的基本规则"><span class="nav-number">5.4.</span> <span class="nav-text">建立索引的基本规则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-最左匹配原则"><span class="nav-number">5.5.</span> <span class="nav-text">1. 最左匹配原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-选择区分度高的列作为索引"><span class="nav-number">5.6.</span> <span class="nav-text">2. 选择区分度高的列作为索引</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-索引列不能参与计算"><span class="nav-number">5.7.</span> <span class="nav-text">3. 索引列不能参与计算</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-其它"><span class="nav-number">5.8.</span> <span class="nav-text">4. 其它</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fern</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+<span class="post-meta-divider">|</span>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+  <div class="bg_content">
+     <canvas id="canvas"></canvas>
+  </div>
+</body>
+</html>
+
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
